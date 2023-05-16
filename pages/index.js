@@ -1,17 +1,53 @@
+import { auth } from "@/firebase/firebase";
+import { useAuth } from "@/hooks/useAuth";
+import { signOut } from "firebase/auth";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { GoSignOut } from "react-icons/go";
 import { MdDeleteForever } from "react-icons/md";
+import avatar from "../public/assets/avatar.png";
 const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
 export default function Home() {
+  const { state } = useAuth();
+  const { isLoading, authUser } = state;
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!authUser && !isLoading) {
+      // if authuser dont exist then navigate to login page
+      router.push("/login");
+    }
+    console.log(authUser);
+  });
   return (
     <main className="">
-      <div className="bg-black text-white w-44 py-4 mt-10 rounded-lg transition-transform hover:bg-black/[0.8] active:scale-90 flex items-center justify-center gap-2 font-medium shadow-md fixed bottom-5 right-5 cursor-pointer">
+      <div className="flex items-center justify-between py-4 px-4 sm:px-10 fixed w-full top-0 left-0 bg-white z-10">
+        <h2 className="text-lg md:text-2xl font-bold">Todo app</h2>
+        <div className="flex gap-2.5 items-center">
+          <Image
+            className="rounded-full "
+            width={40}
+            height={40}
+            src={authUser?.photoURL ? authUser?.photoURL : avatar}
+            alt="User"
+          />
+          <div className="font-medium">{authUser?.displayName}</div>
+        </div>
+      </div>
+
+      <div
+        className="bg-black text-white w-44 py-4 mt-10 rounded-lg transition-transform hover:bg-black/[0.8] active:scale-90 flex items-center justify-center gap-2 font-medium shadow-md fixed bottom-5 right-5 cursor-pointer"
+        onClick={() => signOut(auth)}
+      >
         <GoSignOut size={18} />
         <span>Logout</span>
       </div>
-      <div className="max-w-3xl mx-auto mt-10 p-8">
-        <div className="bg-white -m-6 p-3 sticky top-0">
+      <div className="max-w-3xl mx-auto mt-14 p-8">
+        <div className="bg-white -m-6 p-3 sticky top-16">
           <div className="flex justify-center flex-col items-center">
             <span className="text-7xl mb-10">📝</span>
             <h1 className="text-5xl md:text-7xl font-bold">ToooDooo's</h1>
@@ -28,7 +64,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-        <div className="my-10">
+        <div className="my-10 mb-16">
           {arr.map((todo, index) => (
             <div key={index} className="flex items-center justify-between mt-4">
               <div className="flex items-center gap-3">
