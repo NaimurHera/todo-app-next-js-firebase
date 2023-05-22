@@ -89,7 +89,7 @@ export default function Home() {
   };
 
   const getFirstName = () => {
-    const firstName = authUser?.displayName.split(" ")[0];
+    const firstName = authUser?.displayName?.split(" ")[0];
     return firstName;
   };
 
